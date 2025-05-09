@@ -2,6 +2,7 @@ DROP PROCEDURE IF EXISTS getSeats$$
 DROP PROCEDURE IF EXISTS getEmployees$$
 DROP PROCEDURE IF EXISTS getSeatByFloorSeatSeq$$
 DROP PROCEDURE IF EXISTS getEmployeeById$$
+DROP PROCEDURE IF EXISTS getEmployeeByFloorSeatSeq$$
 DROP PROCEDURE IF EXISTS assignSeat$$
 
 CREATE PROCEDURE getSeats()
@@ -31,7 +32,7 @@ BEGIN
   WHERE FLOOR_SEAT_SEQ = seq;
 END$$
 
-CREATE PROCEDURE getEmployeeById(IN emp_id CHAR(5))
+CREATE PROCEDURE getEmployeeById(IN p_emp_id CHAR(5))
 BEGIN
   SELECT 
     e.EMP_ID,
@@ -41,10 +42,23 @@ BEGIN
     s.SEAT_NO
   FROM Employee e
   LEFT JOIN SeatingChart s ON e.FLOOR_SEAT_SEQ = s.FLOOR_SEAT_SEQ
-  WHERE e.EMP_ID = emp_id;
+  WHERE e.EMP_ID = p_emp_id;
 END$$
 
-CREATE PROCEDURE assignSeat(IN p_emp_id CHAR(5), IN p_seat_seq INT)
+CREATE PROCEDURE getEmployeeByFloorSeatSeq (IN seq INT)
+BEGIN
+  SELECT 
+    e.EMP_ID,
+    e.NAME,
+    e.EMAIL,
+    s.FLOOR_NO,
+    s.SEAT_NO
+  FROM Employee e
+  LEFT JOIN SeatingChart s ON e.FLOOR_SEAT_SEQ = s.FLOOR_SEAT_SEQ
+  WHERE e.FLOOR_SEAT_SEQ = seq;
+END$$
+
+CREATE PROCEDURE assignSeat(IN p_emp_id CHAR(5), IN seq INT)
 BEGIN
   START TRANSACTION;
 
@@ -55,7 +69,7 @@ BEGIN
 
   -- assign new seat
   UPDATE Employee
-  SET FLOOR_SEAT_SEQ = p_seat_seq
+  SET FLOOR_SEAT_SEQ = seq
   WHERE EMP_ID = p_emp_id;
 
   COMMIT;
