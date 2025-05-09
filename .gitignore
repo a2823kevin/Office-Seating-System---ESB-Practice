@@ -1,4 +1,6 @@
 .env
 .vscode
-backend/src/main/resources/static
+backend/src/main/resources/static/*
 backend/src/main/resources/DB
+
+!.gitkeep
