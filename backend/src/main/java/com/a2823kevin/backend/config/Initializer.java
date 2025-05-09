@@ -39,7 +39,6 @@ public class Initializer implements CommandLineRunner {
 
         // check if tables exist, if not, insert datas
         for (String tableName: tableCreatingOrder) {
-            System.out.println(tableName);
             try {
                 if (!isTableExist(tableName)) {
                     databasePopulator.addScript(new ClassPathResource(tableInsertSQL.get(tableName)));

@@ -12,6 +12,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(requests->requests
                 .anyRequest().permitAll()
             )
@@ -24,11 +25,11 @@ public class SecurityConfig {
                         // Prohibit any external JS (including CDNs), only allow JS from this site.
                         "script-src 'self';" +
                         // Prohibit the use of <object>, Flash, and Java applets.
-                        "object-src 'none'" +
+                        "object-src 'none';" +
                         // Prevent the <base> tag from changing relative path resolution behavior, ensuring all relative links resolve to this site.
-                        "base-uri 'self'" +
+                        "base-uri 'self';" +
                         // Prevent form submissions to third-party websites to guard against cross-site request forgery (CSRF) attacks.
-                        "form-action 'self'"
+                        "form-action 'self';"
                     )
                 )
             );

@@ -2,6 +2,7 @@ package com.a2823kevin.backend.repository;
 
 import java.sql.CallableStatement;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +25,7 @@ public class EmployeeRepository {
 
     public Employee assignSeat(String empId, int floorSeatSeq) {
         jdbcTemplate.execute((ConnectionCallback<Object>) con -> {
+            // use prepareCall to prevent SQL Injection
             try (CallableStatement cs = con.prepareCall("CALL assignSeat(?, ?)")) {
                 cs.setString(1, empId);
                 cs.setInt(2, floorSeatSeq);
@@ -33,6 +35,15 @@ public class EmployeeRepository {
         });
 
         return findEmployeeById(empId);
+    }
+
+    public Optional<Employee> findEmployeeByFloorSeatSeq(int floorSeatSeq) {
+        List<Employee> result = jdbcTemplate.query(
+            "CALL getEmployeeByFloorSeatSeq(?)", 
+            employeeRowMapper, 
+            floorSeatSeq
+        );
+        return result.stream().findFirst();
     }
 
     public Employee findEmployeeById(String empId) throws EmployeeNotFoundException {

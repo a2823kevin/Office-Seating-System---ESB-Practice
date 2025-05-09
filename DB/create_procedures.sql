@@ -44,19 +44,19 @@ BEGIN
   WHERE e.EMP_ID = emp_id;
 END$$
 
-CREATE PROCEDURE assignSeat(IN emp_id CHAR(5), IN seat_seq INT)
+CREATE PROCEDURE assignSeat(IN p_emp_id CHAR(5), IN p_seat_seq INT)
 BEGIN
   START TRANSACTION;
 
   -- clear current seat
   UPDATE Employee
   SET FLOOR_SEAT_SEQ = NULL
-  WHERE EMP_ID = emp_id;
+  WHERE EMP_ID = p_emp_id;
 
   -- assign new seat
   UPDATE Employee
-  SET FLOOR_SEAT_SEQ = seat_seq
-  WHERE EMP_ID = emp_id;
+  SET FLOOR_SEAT_SEQ = p_seat_seq
+  WHERE EMP_ID = p_emp_id;
 
   COMMIT;
 END$$
