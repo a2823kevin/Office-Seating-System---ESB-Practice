@@ -54,8 +54,13 @@ public class Initializer implements CommandLineRunner {
     private boolean isTableExist(String tableName) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             DatabaseMetaData metaData = connection.getMetaData();
-            ResultSet resultSet = metaData.getTables(null, null, tableName.toUpperCase(), new String[]{"TABLE"});
-            return resultSet.next();
+            ResultSet rs = metaData.getTables(null, null, "%", new String[]{"TABLE"});
+            while (rs.next()) {
+                if (tableName.equals(rs.getString(3))) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
